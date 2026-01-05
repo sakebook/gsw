@@ -1,0 +1,18 @@
+# .envrc example
+# This file is loaded by direnv when you enter this directory.
+
+# --- 1. Identity (Who are you?) ---
+# Switch the underlying gcloud configuration (Account + Auth)
+# This keeps your "work" config clean and reusable across many projects.
+export CLOUDSDK_ACTIVE_CONFIG_NAME="work"
+
+# --- 2. Target (Where are you working?) ---
+# Override the Project ID for this specific directory.
+# This takes precedence over the project set in the configuration above.
+export CLOUDSDK_CORE_PROJECT="my-project-dev"
+
+# You can also set other environment variables
+export MY_SERVICE_URL="https://my-service-dot-my-project-dev.run.app"
+
+# Optional: Echo a message to confirm it's loaded
+echo "Loaded: Identity=[$CLOUDSDK_ACTIVE_CONFIG_NAME] Project=[$CLOUDSDK_CORE_PROJECT]"
