@@ -55,11 +55,30 @@ function gsw-local() {
   gcloud config list --format="value(core.account,core.project)" | tr '\t' '\n' | sed 's/^/- /'
 }
 
-# Completion for gsw and gsw-local
-_gsw() {
-  local -a configs
-  configs=("${(@f)$(gcloud config configurations list --format="value(name)")}")
-  compadd -a configs
-}
-compdef _gsw gsw
-compdef _gsw gsw-local
+# Completion Logic
+if [ -n "$BASH_VERSION" ]; then
+  # Bash Completion
+  _gsw_bash_autocomplete() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    
+    # Fetch configurations
+    opts=$(gcloud config configurations list --format="value(name)" 2>/dev/null)
+    
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    return 0
+  }
+  complete -F _gsw_bash_autocomplete gsw
+  complete -F _gsw_bash_autocomplete gsw-local
+
+elif [ -n "$ZSH_VERSION" ]; then
+  # Zsh Completion
+  _gsw() {
+    local -a configs
+    configs=("${(@f)$(gcloud config configurations list --format="value(name)" 2>/dev/null)}")
+    compadd -a configs
+  }
+  compdef _gsw gsw
+  compdef _gsw gsw-local
+fi

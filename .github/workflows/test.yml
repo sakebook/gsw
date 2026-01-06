@@ -1,0 +1,25 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup BATS
+        uses: mig4/setup-bats@v1
+        
+      - name: Run Tests (Zsh)
+        # We explicitly run bats using zsh because the plugin is currently Zsh-only.
+        # bats is a bash script, but the code it sources might need zsh.
+        # However, BATS itself is bash. 
+        # Strategy: The test file itself is valid Bash. The SOURCED file is the issue.
+        # For this pass, we will try running it normally. If it fails due to Zsh syntax,
+        # we know our multi-shell refactor is working when it passes!
+        run: bats test/gsw.bats

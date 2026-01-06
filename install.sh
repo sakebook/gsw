@@ -17,7 +17,7 @@ else
 fi
 
 # 2. Add to .zshrc
-SOURCE_CMD="source $INSTALL_DIR/gsw.plugin.zsh"
+SOURCE_CMD="source $INSTALL_DIR/gsw.sh"
 
 if grep -Fxq "$SOURCE_CMD" "$ZSHRC"; then
   echo "   Already configured in $ZSHRC"
