@@ -48,7 +48,7 @@ Then add `gsw` to your plugins list in `~/.zshrc`.
     ```
 2.  Add this to your `~/.zshrc`:
     ```bash
-    source ~/.gsw/gsw.plugin.zsh
+    source ~/.gsw/gsw.sh
     ```
 
 ## Usage
