@@ -1,5 +1,7 @@
 # gsw (Google Switch)
 
+[![test](https://github.com/sakebook/gsw/actions/workflows/test.yml/badge.svg)](https://github.com/sakebook/gsw/actions/workflows/test.yml)
+
 > Switch Google Cloud configurations as easily as valid 
 
 `gsw` is a lightweight Bash/Zsh plugin that makes switching between Google Cloud SDK configurations effortless. It supports both **Global** switching (changing the default for all shells) and **Local** switching (changing only for the current shell session).
