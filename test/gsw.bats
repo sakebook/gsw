@@ -23,9 +23,7 @@ setup() {
 }
 
 @test "gsw-local sets CLOUDSDK_ACTIVE_CONFIG_NAME" {
-  run gsw-local "test-config"
-  [ "$status" -eq 0 ]
-  [ "$output" != "" ]
+  gsw-local "test-config"
   [ "$CLOUDSDK_ACTIVE_CONFIG_NAME" = "test-config" ]
 }
 
