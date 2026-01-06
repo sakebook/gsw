@@ -42,3 +42,10 @@ setup() {
   [ "$status" -eq 0 ]
   [[ "$output" =~ "Usage: gsw" ]]
 }
+
+@test "gsw --version outputs version" {
+  run gsw --version
+  [ "$status" -eq 0 ]
+  # Check format: gsw version vX.X.X
+  [[ "$output" =~ "gsw version v"[0-9]+\.[0-9]+\.[0-9]+ ]]
+}
