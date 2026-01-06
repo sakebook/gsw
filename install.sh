@@ -23,9 +23,11 @@ if grep -Fxq "$SOURCE_CMD" "$ZSHRC"; then
   echo "   Already configured in $ZSHRC"
 else
   echo "   Adding source command to $ZSHRC..."
-  echo "" >> "$ZSHRC"
-  echo "# gsw: Google Switch" >> "$ZSHRC"
-  echo "$SOURCE_CMD" >> "$ZSHRC"
+  {
+    echo ""
+    echo "# gsw: Google Switch"
+    echo "$SOURCE_CMD"
+  } >> "$ZSHRC"
 fi
 
 echo ""
