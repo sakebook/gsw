@@ -21,7 +21,21 @@ Run this command to install `gsw` to `~/.gsw` and update your `.zshrc` automatic
 curl -sL https://raw.githubusercontent.com/sakebook/gsw/main/install.sh | bash
 ```
 
-### Method 2: Plugin Managers
+### Method 2: Manual Install
+
+1.  Clone the repo:
+    ```bash
+    git clone https://github.com/sakebook/gsw.git ~/.gsw
+    ```
+2.  Add this to your `~/.zshrc` (or `~/.bashrc`):
+    ```bash
+    source ~/.gsw/gsw.sh
+    ```
+
+### Plugin Managers (Zsh)
+
+<details>
+<summary>Click to expand configuration examples</summary>
 
 **zplug:**
 ```zsh
@@ -35,28 +49,7 @@ github = "sakebook/gsw"
 use = ["gsw.sh"]
 ```
 
-**antigen:**
-```zsh
-antigen bundle sakebook/gsw
-```
-
-**Oh My Zsh (Custom)**:
-Clone into custom plugins:
-```bash
-git clone https://github.com/sakebook/gsw.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/gsw
-```
-Then add `gsw` to your plugins list in `~/.zshrc`.
-
-### Method 3: Manual
-
-1.  Clone the repo:
-    ```bash
-    git clone https://github.com/sakebook/gsw.git ~/.gsw
-    ```
-2.  Add this to your `~/.zshrc` (or `~/.bashrc`):
-    ```bash
-    source ~/.gsw/gsw.sh
-    ```
+</details>
 
 ## Usage
 
