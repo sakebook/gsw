@@ -25,7 +25,14 @@ curl -sL https://raw.githubusercontent.com/sakebook/gsw/main/install.sh | bash
 
 **zplug:**
 ```zsh
-zplug "sakebook/gsw"
+zplug "sakebook/gsw", use:gsw.sh
+```
+
+**sheldon:**
+```toml
+[plugins.gsw]
+github = "sakebook/gsw"
+use = ["gsw.sh"]
 ```
 
 **antigen:**
