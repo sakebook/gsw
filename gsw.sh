@@ -2,12 +2,20 @@
 
 # gsw: Google Switch
 # Easily switch between gcloud configurations
+GSW_VERSION="v0.1.1"
+
 function gsw() {
+  if [ "$1" = "--version" ] || [ "$1" = "-v" ]; then
+    echo "gsw version $GSW_VERSION"
+    return 0
+  fi
+
   if [ -z "$1" ]; then
     echo "Available gcloud configurations:"
     gcloud config configurations list
     echo ""
     echo "Usage: gsw <config_name>"
+    echo "       gsw --version"
     echo "  Switches the GLOBAL active configuration."
     echo ""
     echo "💡 Tip: To switch automatically when entering a directory,"
