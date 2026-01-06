@@ -2,14 +2,14 @@
 
 > Switch Google Cloud configurations as easily as valid 
 
-`gsw` is a lightweight Zsh plugin that makes switching between Google Cloud SDK configurations effortless. It supports both **Global** switching (changing the default for all shells) and **Local** switching (changing only for the current shell session).
+`gsw` is a lightweight Bash/Zsh plugin that makes switching between Google Cloud SDK configurations effortless. It supports both **Global** switching (changing the default for all shells) and **Local** switching (changing only for the current shell session).
 
 ## Features
 
 - ⚡ **Fast Switching**: `gsw <config>` to switch globally.
 - 🛡️ **Local Isolation**: `gsw-local <config>` to switch *only* in the current terminal tab (perfect for multi-project workflows).
-- 🧠 **Auto-Completion**: Tab completion for your existing gcloud configurations.
-- 📦 **Zero Dependencies**: Pure Zsh functions.
+- 🧠 **Auto-Completion**: Tab completion for your existing gcloud configurations (Bash & Zsh).
+- 📦 **Zero Dependencies**: Pure Shell functions.
 
 ## Installation
 
@@ -46,7 +46,7 @@ Then add `gsw` to your plugins list in `~/.zshrc`.
     ```bash
     git clone https://github.com/sakebook/gsw.git ~/.gsw
     ```
-2.  Add this to your `~/.zshrc`:
+2.  Add this to your `~/.zshrc` (or `~/.bashrc`):
     ```bash
     source ~/.gsw/gsw.sh
     ```
