@@ -29,7 +29,7 @@ Managing multiple Google Cloud projects usually involves `gcloud config configur
 
 ## Installation
 
-### Method 1: One-Line Install (Zsh only)
+### Method 1: One-Line Install (Recommended)
 
 Run this command to install `gsw` to `~/.gsw` and update your `.zshrc` automatically:
 
