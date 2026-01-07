@@ -69,12 +69,6 @@ use = ["gsw.sh"]
 
 ## Usage
 
-### Show Help
-```bash
-gsw --help
-gsw-local --help
-```
-
 ### Global Switch (`gsw`)
 Changes the active configuration for **all** open terminals (that rely on the global config).
 
