@@ -2,11 +2,27 @@
 
 # gsw: Google Switch
 # Easily switch between gcloud configurations
-GSW_VERSION="v0.1.1"
+GSW_VERSION="v0.2.0"
 
 function gsw() {
   if [ "$1" = "--version" ] || [ "$1" = "-v" ]; then
     echo "gsw version $GSW_VERSION"
+    return 0
+  fi
+
+  if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    echo "Usage: gsw <config_name>"
+    echo "       gsw --help"
+    echo "       gsw --version"
+    echo ""
+    echo "  Switches the GLOBAL active gcloud configuration."
+    echo ""
+    echo "Options:"
+    echo "  <config_name>   Name of the gcloud configuration to activate"
+    echo "  --help, -h      Show this help message"
+    echo "  --version, -v   Show version information"
+    echo ""
+    echo "💡 Tip: Run 'gsw' without arguments to see available configurations."
     return 0
   fi
 
@@ -15,6 +31,7 @@ function gsw() {
     gcloud config configurations list
     echo ""
     echo "Usage: gsw <config_name>"
+    echo "       gsw --help"
     echo "       gsw --version"
     echo "  Switches the GLOBAL active configuration."
     echo ""
@@ -43,12 +60,28 @@ function gsw() {
 # gsw-local: Switch ONLY in the current shell
 # Uses environment variable CLOUDSDK_ACTIVE_CONFIG_NAME
 function gsw-local() {
-  if [ -z "$1" ]; then
+  if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     echo "Usage: gsw-local <config_name>"
-    echo "  Switches configuration ONLY for this terminal tab."
+    echo "       gsw-local --help"
     echo ""
+    echo "  Switches configuration ONLY for this terminal session."
+    echo "  This sets the CLOUDSDK_ACTIVE_CONFIG_NAME environment variable."
+    echo ""
+    echo "Options:"
+    echo "  <config_name>   Name of the gcloud configuration to activate locally"
+    echo "  --help, -h      Show this help message"
+    echo ""
+    echo "💡 Tip: Run 'gsw-local' without arguments to see available configurations."
+    return 0
+  fi
+
+  if [ -z "$1" ]; then
     echo "Available gcloud configurations:"
     gcloud config configurations list
+    echo ""
+    echo "Usage: gsw-local <config_name>"
+    echo "       gsw-local --help"
+    echo "  Switches configuration ONLY for this terminal tab."
     echo ""
     echo "💡 Tip: This sets the environment variable:"
     echo "       export CLOUDSDK_ACTIVE_CONFIG_NAME=\"<config_name>\""
