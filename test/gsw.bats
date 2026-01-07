@@ -49,3 +49,33 @@ setup() {
   # Check format: gsw version vX.X.X
   [[ "$output" =~ "gsw version v"[0-9]+\.[0-9]+\.[0-9]+ ]]
 }
+
+@test "gsw --help shows usage without config list" {
+  run gsw --help
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "Usage: gsw" ]]
+  [[ "$output" =~ "--help" ]]
+  # Should NOT call gcloud (no config list)
+  [[ ! "$output" =~ "gcloud config configurations list" ]]
+}
+
+@test "gsw -h shows usage" {
+  run gsw -h
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "Usage: gsw" ]]
+}
+
+@test "gsw-local --help shows usage without config list" {
+  run gsw-local --help
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "Usage: gsw-local" ]]
+  [[ "$output" =~ "--help" ]]
+  # Should NOT call gcloud (no config list)
+  [[ ! "$output" =~ "gcloud config configurations list" ]]
+}
+
+@test "gsw-local -h shows usage" {
+  run gsw-local -h
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "Usage: gsw-local" ]]
+}
