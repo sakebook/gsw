@@ -1,0 +1,87 @@
+# gsw
+
+> Switch Google Cloud configurations instantly.
+
+gsw is a lightweight Bash/Zsh plugin for switching between gcloud configurations.
+
+## Prerequisites
+
+- Google Cloud SDK (`gcloud`) must be installed and configured
+- At least one gcloud configuration must exist (`gcloud config configurations list`)
+
+## Commands
+
+### gsw
+
+Switch the GLOBAL active gcloud configuration.
+
+```
+gsw <config_name>    # Switch to specified configuration
+gsw                  # List available configurations and show usage
+gsw --help           # Show help (static, no gcloud call)
+gsw --version        # Show version
+```
+
+### gsw-local
+
+Switch configuration ONLY for the current shell session.
+
+```
+gsw-local <config_name>    # Switch locally (sets CLOUDSDK_ACTIVE_CONFIG_NAME)
+gsw-local                  # List available configurations and show usage
+gsw-local --help           # Show help
+```
+
+## Environment Variables
+
+| Variable | Description | Set by |
+|----------|-------------|--------|
+| `CLOUDSDK_ACTIVE_CONFIG_NAME` | Overrides global config for current shell | `gsw-local` |
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| 0 | Success |
+| 1 | Configuration does not exist |
+
+## Error Handling
+
+### Configuration not found
+
+```
+Error: Configuration 'nonexistent' does not exist.
+Available configurations:
+...
+```
+
+**Resolution**: Run `gsw` to see available configuration names.
+
+### gcloud not installed
+
+```
+command not found: gcloud
+```
+
+**Resolution**: Install Google Cloud SDK from https://cloud.google.com/sdk/docs/install
+
+## Installation
+
+```bash
+curl -sL https://raw.githubusercontent.com/sakebook/gsw/main/install.sh | bash
+```
+
+Or clone to `~/.gsw` and add `source ~/.gsw/gsw.sh` to your shell config.
+
+## Integration with direnv
+
+For automatic configuration switching per directory:
+
+```bash
+# .envrc
+export CLOUDSDK_ACTIVE_CONFIG_NAME="project-config"
+```
+
+## License
+
+MIT
