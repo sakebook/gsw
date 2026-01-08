@@ -16,6 +16,15 @@ setup() {
   }
   export -f gcloud
 
+  # Mock 'command -v gcloud' to return success by default in tests
+  function command() {
+    if [[ "$1" == "-v" && "$2" == "gcloud" ]]; then
+      return 0
+    fi
+    builtin command "$@"
+  }
+  export -f command
+
   # Source the script
   source ./gsw.sh
 }
@@ -95,4 +104,21 @@ setup() {
   run gsw "invalid-config"
   [ "$status" -eq 1 ]
   [[ "$output" =~ "Error: Configuration 'invalid-config' does not exist" ]]
+}
+
+@test "gsw returns error if gcloud is not installed" {
+  # Mock 'command -v gcloud' failure
+  function command() {
+    if [[ "$1" == "-v" && "$2" == "gcloud" ]]; then
+      return 1
+    fi
+    builtin command "$@"
+  }
+  export -f command
+
+  run gsw
+  [ "$status" -eq 1 ]
+  [[ "$output" =~ "Error: 'gcloud' command not found" ]]
+  
+  unset -f command
 }

@@ -5,6 +5,13 @@
 GSW_VERSION="v0.3.0"
 
 function gsw() {
+  # Check if gcloud is installed
+  if ! command -v gcloud >/dev/null 2>&1; then
+    echo "Error: 'gcloud' command not found."
+    echo "Please install the Google Cloud SDK first: https://cloud.google.com/sdk/docs/install"
+    return 1
+  fi
+
   local is_global=false
   local config_name=""
 
@@ -106,15 +113,36 @@ function gsw() {
 if [ -n "$BASH_VERSION" ]; then
   # Bash Completion
   _gsw_bash_autocomplete() {
-    local cur opts
+    local cur prev opts
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
     
-    # Fetch configurations
-    opts=$(gcloud config configurations list --format="value(name)" 2>/dev/null)
+    # Flags
+    opts="-g --global -h --help -v --version"
     
+    case "${prev}" in
+      -g|--global)
+        # Only configurations after global flag
+        local configs
+        configs=$(gcloud config configurations list --format="value(name)" 2>/dev/null)
+        # shellcheck disable=SC2207
+        COMPREPLY=( $(compgen -W "${configs}" -- "${cur}") )
+        return 0
+        ;;
+    esac
+
+    if [[ ${cur} == -* ]] ; then
+      # shellcheck disable=SC2207
+      COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+      return 0
+    fi
+
+    # Default: configurations + flags
+    local configs
+    configs=$(gcloud config configurations list --format="value(name)" 2>/dev/null)
     # shellcheck disable=SC2207
-    COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+    COMPREPLY=( $(compgen -W "${opts} ${configs}" -- "${cur}") )
     return 0
   }
   complete -F _gsw_bash_autocomplete gsw
