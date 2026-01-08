@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2026-01-09
+### Changed
+- Improved README with a comparison table and architectural explanation.
+- Reorganized installation instructions for better user experience.
+
 ## [0.4.0] - 2026-01-08
 ### Added
 - **Active Config Visualizer**: Highlights the session-active configuration with an asterisk (`*`) in the list display.

@@ -2,7 +2,7 @@
 
 # gsw: Google Switch
 # Easily switch between gcloud configurations
-GSW_VERSION="v0.4.0"
+GSW_VERSION="v0.4.1"
 
 function gsw() {
   # Check if gcloud is installed
