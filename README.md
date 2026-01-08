@@ -1,6 +1,6 @@
 # gsw (Google Switch)
 
-[![test](https://github.com/sakebook/gsw/actions/workflows/test.yml/badge.svg)](https://github.com/sakebook/gsw/actions/workflows/test.yml)
+[![Tests](https://github.com/sakebook/gsw/actions/workflows/test.yml/badge.svg)](https://github.com/sakebook/gsw/actions/workflows/test.yml)
 
 > Switch Google Cloud configurations instantly.
 
