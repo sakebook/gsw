@@ -13,30 +13,21 @@ gsw is a lightweight Bash/Zsh plugin for switching between gcloud configurations
 
 ### gsw
 
-Switch the GLOBAL active gcloud configuration.
+Switch the gcloud configuration. Defaults to the current shell session.
 
 ```
-gsw <config_name>    # Switch to specified configuration
+gsw <config_name>    # Switch for current session (sets CLOUDSDK_ACTIVE_CONFIG_NAME)
+gsw -g <config_name> # Switch GLOBALLY (changes default active config)
 gsw                  # List available configurations and show usage
 gsw --help           # Show help (static, no gcloud call)
 gsw --version        # Show version
-```
-
-### gsw-local
-
-Switch configuration ONLY for the current shell session.
-
-```
-gsw-local <config_name>    # Switch locally (sets CLOUDSDK_ACTIVE_CONFIG_NAME)
-gsw-local                  # List available configurations and show usage
-gsw-local --help           # Show help
 ```
 
 ## Environment Variables
 
 | Variable | Description | Set by |
 |----------|-------------|--------|
-| `CLOUDSDK_ACTIVE_CONFIG_NAME` | Overrides global config for current shell | `gsw-local` |
+| `CLOUDSDK_ACTIVE_CONFIG_NAME` | Overrides global config for current shell | `gsw` (default) |
 
 ## Exit Codes
 

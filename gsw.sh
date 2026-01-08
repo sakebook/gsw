@@ -2,7 +2,7 @@
 
 # gsw: Google Switch
 # Easily switch between gcloud configurations
-GSW_VERSION="v0.2.0"
+GSW_VERSION="v0.3.0"
 
 function gsw() {
   local is_global=false
