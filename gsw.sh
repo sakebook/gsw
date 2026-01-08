@@ -74,6 +74,14 @@ function gsw() {
     return
   fi
 
+  # Security: Validate configuration name (allow only [a-z0-9_-])
+  # This prevents command injection or other malicious input.
+  if [[ ! "$config_name" =~ ^[a-z0-9_-]+$ ]]; then
+    echo "Error: Invalid configuration name '$config_name'."
+    echo "Configuration names can only contain lowercase letters, numbers, hyphens, and underscores."
+    return 1
+  fi
+
   # Check if the configuration exists
   if ! gcloud config configurations describe "$config_name" > /dev/null 2>&1; then
     echo "Error: Configuration '$config_name' does not exist."
