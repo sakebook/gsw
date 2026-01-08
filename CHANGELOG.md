@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-01-08
+### Added
+- **Active Config Visualizer**: Highlights the session-active configuration with an asterisk (`*`) in the list display.
+- **Enhanced Zsh & Bash Completion**: Improved completion support for flags (`-g`, `--global`, `--help`, `--version`) and configuration metadata.
+- **Improved Security**: Added strict input validation for configuration names (`[a-z0-9_-]`) and hardened string matching logic to prevent injection.
+- **gcloud Existence Check**: Added a friendly error message when `gcloud` command is not found.
+- **Standardized CI**: Integrated ShellCheck for continuous quality assurance.
+
 ## [0.3.0] - 2026-01-08
 ### Changed
 - **Major Redesign**: `gsw` now defaults to **Session-scoped switching** (current terminal tab only) for improved safety.
