@@ -25,16 +25,14 @@ Type "setopt PROMPT_SUBST"
 Enter
 Type "setopt INTERACTIVE_COMMENTS"
 Enter
-# Mock gcloud for simple list usage if needed (though gsw mock handles most)
+# Mock gcloud for simple list usage
 Type "function gcloud() { :; }"
 Enter
-
-# OVERRIDE gsw/gsw-local
-# Using single quotes for VHS 'Type' makes it much safer to define functions with double quotes internally
-Type 'function gsw() { if [ -z "$1" ]; then echo "Available gcloud configurations:"; echo "NAME               IS_ACTIVE  ACCOUNT               PROJECT"; echo "default            True       user@demo.com         demo-project"; echo "work-project       False      worker@corp.com       work-production"; echo "personal-side-hustle False      me@gmail.com          personal-app"; echo ""; echo "Usage: gsw <config_name>"; echo "  Switches the GLOBAL active configuration."; else echo "Activated [$1]."; echo "✅ Switched to configuration: $1"; echo "Current Identity:"; echo "- user@demo.com"; echo "- $1-id"; export PS1="%F{blue}%1~%f %F{cyan}(gcloud:$1)%f %# "; fi }'
+Type 'GSW_GLOBAL="default"; GSW_SESSION="";'
 Enter
 
-Type 'function gsw-local() { echo "✅ Switched LOCALLY to configuration: $1"; echo "(This change only affects this terminal tab)"; echo "Current Identity:"; echo "- user@demo.com"; echo "- $1-id"; export CLOUDSDK_ACTIVE_CONFIG_NAME="$1"; export PS1="%F{blue}%1~%f %F{cyan}(gcloud:$1)%f %# "; }'
+# OVERRIDE gsw for demo (Mocks output and PS1 updates with state)
+Type 'function gsw() { local is_global=false; local config=""; while [[ $# -gt 0 ]]; do case "$1" in -g|--global) is_global=true; shift ;; *) config="$1"; shift ;; esac; done; if [ -z "$config" ]; then echo "Available gcloud configurations:"; echo "NAME               IS_ACTIVE  ACCOUNT               PROJECT"; echo "default            True       user@demo.com         demo-project"; echo "work-project       False      worker@corp.com       work-production"; echo "personal-side-hustle False      me@gmail.com          personal-app"; echo ""; echo "Usage: gsw [options] <config_name>"; return; fi; if [ "$is_global" = true ]; then GSW_GLOBAL="$config"; echo "✅ Switched GLOBALLY to configuration: $config"; else GSW_SESSION="$config"; export CLOUDSDK_ACTIVE_CONFIG_NAME="$config"; echo "✅ Switched SESSION to configuration: $config"; echo "(This change only affects this terminal tab)"; fi; local active=${GSW_SESSION:-$GSW_GLOBAL}; export PS1="%F{blue}%1~%f %F{cyan}(gcloud:$active)%f %# "; }'
 Enter
 
 # 2. Configure PS1 (Initial State)
@@ -46,23 +44,21 @@ Enter
 Show
 
 # Start the demo
-# (Removed no-arg 'gsw' check as requested)
-
-Type "# Switch global configuration easily"
+Type "# First, switch the Global configuration"
 Enter
 Sleep 500ms
-Type "gsw work-project"
+Type "gsw -g work-project"
 Enter
 Sleep 2s
 
-Type "# Or switch LOCALLY for just this shell session"
+Type "# Now, switch SESSION for just this terminal tab"
 Enter
 Sleep 500ms
-Type "gsw-local personal-side-hustle"
+Type "gsw personal-side-hustle"
 Enter
 Sleep 2s
 
-Type "# Verify: Only this shell session is affected (env var is set)"
+Type "# Verify: Environment variable is set, overriding global"
 Enter
 Sleep 500ms
 Type "echo $CLOUDSDK_ACTIVE_CONFIG_NAME"

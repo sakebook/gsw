@@ -22,60 +22,60 @@ setup() {
   source ./gsw.sh || true # Ignore errors specifically for the non-bash parts for now
 }
 
-@test "gsw-local sets CLOUDSDK_ACTIVE_CONFIG_NAME" {
-  gsw-local "test-config"
+@test "gsw sets CLOUDSDK_ACTIVE_CONFIG_NAME by default" {
+  gsw "test-config"
   [ "$CLOUDSDK_ACTIVE_CONFIG_NAME" = "test-config" ]
 }
 
-@test "gsw activation calls gcloud config configurations activate" {
-  # We need to mock the 'describe' call to succeed, otherwise gsw returns early.
-  # Our mock just echoes, which counts as success (exit 0) and output.
-  
-  run gsw "test-config"
+@test "gsw -g calls gcloud config configurations activate" {
+  run gsw -g "test-config"
   [ "$status" -eq 0 ]
-  # Check if it tried to activate
+  [[ "$output" =~ "Switched GLOBALLY" ]]
   [[ "$output" =~ "gcloud config configurations activate test-config" ]]
 }
 
-@test "gsw with no args shows usage" {
+@test "gsw --global calls gcloud config configurations activate" {
+  run gsw --global "test-config"
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "Switched GLOBALLY" ]]
+}
+
+@test "gsw with no args shows usage with session info" {
   run gsw
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "Usage: gsw" ]]
+  [[ "$output" =~ "Default switches only for this terminal session" ]]
 }
 
 @test "gsw --version outputs version" {
   run gsw --version
   [ "$status" -eq 0 ]
-  # Check format: gsw version vX.X.X
   [[ "$output" =~ "gsw version v"[0-9]+\.[0-9]+\.[0-9]+ ]]
 }
 
-@test "gsw --help shows usage without config list" {
+@test "gsw --help shows usage with flags" {
   run gsw --help
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "Usage: gsw" ]]
-  [[ "$output" =~ "--help" ]]
-  # Should NOT call gcloud (no config list)
+  [[ "$output" =~ "-g, --global" ]]
   [[ ! "$output" =~ "gcloud config configurations list" ]]
 }
 
-@test "gsw -h shows usage" {
-  run gsw -h
-  [ "$status" -eq 0 ]
-  [[ "$output" =~ "Usage: gsw" ]]
+@test "gsw returns error for unknown option" {
+  run gsw --unknown
+  [ "$status" -eq 1 ]
+  [[ "$output" =~ "Error: Unknown option" ]]
 }
 
-@test "gsw-local --help shows usage without config list" {
-  run gsw-local --help
-  [ "$status" -eq 0 ]
-  [[ "$output" =~ "Usage: gsw-local" ]]
-  [[ "$output" =~ "--help" ]]
-  # Should NOT call gcloud (no config list)
-  [[ ! "$output" =~ "gcloud config configurations list" ]]
-}
-
-@test "gsw-local -h shows usage" {
-  run gsw-local -h
-  [ "$status" -eq 0 ]
-  [[ "$output" =~ "Usage: gsw-local" ]]
+@test "gsw returns error for non-existent config" {
+  # Mock failure for 'describe'
+  function gcloud() {
+    if [[ "$*" =~ "describe" ]]; then
+      return 1
+    fi
+    echo "gcloud $*"
+  }
+  export -f gcloud
+  
+  run gsw "invalid-config"
+  [ "$status" -eq 1 ]
+  [[ "$output" =~ "Error: Configuration 'invalid-config' does not exist" ]]
 }
