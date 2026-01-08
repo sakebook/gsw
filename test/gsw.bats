@@ -3,23 +3,21 @@
 setup() {
   # Mock gcloud command
   function gcloud() {
-    echo "gcloud $*"
+    case "$*" in
+      "config configurations list"*)
+        echo "NAME        IS_ACTIVE  ACCOUNT            PROJECT"
+        echo "prod        True       admin@company.com  prod-project"
+        echo "dev         False      user@company.com   dev-project"
+        ;;
+      *)
+        echo "gcloud $*"
+        ;;
+    esac
   }
   export -f gcloud
 
-  # Source the script (assuming Zsh for now, but BATS runs in Bash usually. 
-  # Since our script is currently Zsh-only, we might need to test strictly in Zsh 
-  # or make the script compatible first.
-  # HOWEVER, the current script is mostly POSIX compatible except for completion.
-  # We will test the basic functions which SHOULD work in simple Bash unless zsh-specifics are hit.
-  
-  # To properly test Zsh functions, we usually need to run bats with Zsh or invoke zsh.
-  # For simplicity in this initial "minimum" test, we will check if it source-able in Bash.
-  # If it fails, that confirms we need the refactor! 
-  
-  # Actually, let's load it. The array syntax in _gsw might fail in Bash, 
-  # but the functions gsw/gsw-local should be fine.
-  source ./gsw.sh || true # Ignore errors specifically for the non-bash parts for now
+  # Source the script
+  source ./gsw.sh
 }
 
 @test "gsw sets CLOUDSDK_ACTIVE_CONFIG_NAME by default" {
@@ -40,10 +38,30 @@ setup() {
   [[ "$output" =~ "Switched GLOBALLY" ]]
 }
 
-@test "gsw with no args shows usage with session info" {
+@test "gsw with no args shows available configs and highlights active session" {
+  export CLOUDSDK_ACTIVE_CONFIG_NAME="dev"
   run gsw
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "Default switches only for this terminal session" ]]
+  [[ "$output" =~ "* dev" ]] && [[ "$output" =~ "(session active)" ]]
+  [[ "$output" =~ "  prod" ]]
+}
+
+@test "gsw with no args show available configs without session highlight" {
+  unset CLOUDSDK_ACTIVE_CONFIG_NAME
+  run gsw
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "  prod        True       admin@company.com  prod-project" ]]
+  [[ "$output" =~ "  dev         False      user@company.com   dev-project" ]]
+}
+
+@test "gsw rejects invalid configuration names (Security)" {
+  run gsw "config; rm -rf /"
+  [ "$status" -eq 1 ]
+  [[ "$output" =~ "Error: Invalid configuration name" ]]
+
+  run gsw "dangerous\$(id)"
+  [ "$status" -eq 1 ]
+  [[ "$output" =~ "Error: Invalid configuration name" ]]
 }
 
 @test "gsw --version outputs version" {
@@ -56,7 +74,6 @@ setup() {
   run gsw --help
   [ "$status" -eq 0 ]
   [[ "$output" =~ "-g, --global" ]]
-  [[ ! "$output" =~ "gcloud config configurations list" ]]
 }
 
 @test "gsw returns error for unknown option" {
