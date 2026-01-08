@@ -15,6 +15,12 @@ jobs:
       - name: Setup BATS
         uses: mig4/setup-bats@v1
         
+      - name: ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: '.'
+          ignore: 'test' # Bats files are not pure shell
+
       - name: Run Tests (Zsh)
         # We explicitly run bats using zsh because the plugin is currently Zsh-only.
         # bats is a bash script, but the code it sources might need zsh.

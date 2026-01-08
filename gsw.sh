@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # gsw: Google Switch
 # Easily switch between gcloud configurations
@@ -45,7 +45,26 @@ function gsw() {
 
   if [ -z "$config_name" ]; then
     echo "Available gcloud configurations:"
-    gcloud config configurations list
+    local session_config="$CLOUDSDK_ACTIVE_CONFIG_NAME"
+    local list_output
+    list_output=$(gcloud config configurations list 2>/dev/null)
+    
+    if [ -n "$session_config" ]; then
+      # If session config is active, highlight it in the list
+      echo "$list_output" | while IFS= read -r line; do
+        # Extract the first column (NAME) and compare literally
+        local name="${line%% *}"
+        if [ "$name" = "$session_config" ]; then
+          echo "* $line (session active)"
+        else
+          echo "  $line"
+        fi
+      done
+    else
+      # shellcheck disable=SC2001
+      echo "$list_output" | sed 's/^/  /'
+    fi
+
     echo ""
     echo "Usage: gsw [options] <config_name>"
     echo "  (Default switches only for this terminal session)"
@@ -53,6 +72,14 @@ function gsw() {
     echo "Options:"
     echo "  -g, --global    Switch the GLOBAL active configuration"
     return
+  fi
+
+  # Security: Validate configuration name (allow only [a-z0-9_-])
+  # This prevents command injection or other malicious input.
+  if [[ ! "$config_name" =~ ^[a-z0-9_-]+$ ]]; then
+    echo "Error: Invalid configuration name '$config_name'."
+    echo "Configuration names can only contain lowercase letters, numbers, hyphens, and underscores."
+    return 1
   fi
 
   # Check if the configuration exists
@@ -76,18 +103,18 @@ function gsw() {
   gcloud config list --format="value(core.account,core.project)" | tr '\t' '\n' | sed 's/^/- /'
 }
 
-# Completion Logic
 if [ -n "$BASH_VERSION" ]; then
   # Bash Completion
   _gsw_bash_autocomplete() {
-    local cur prev opts
+    local cur opts
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     
     # Fetch configurations
     opts=$(gcloud config configurations list --format="value(name)" 2>/dev/null)
     
-    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    # shellcheck disable=SC2207
+    COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
     return 0
   }
   complete -F _gsw_bash_autocomplete gsw
@@ -95,9 +122,17 @@ if [ -n "$BASH_VERSION" ]; then
 elif [ -n "$ZSH_VERSION" ]; then
   # Zsh Completion
   _gsw() {
+    _arguments \
+      '(-g --global)'{-g,--global}'[Switch the GLOBAL active configuration]' \
+      '(-h --help)'{-h,--help}'[Show help message]' \
+      '(-v --version)'{-v,--version}'[Show version information]' \
+      '*:gcloud configuration:_gsw_configs'
+  }
+  _gsw_configs() {
     local -a configs
+    # shellcheck disable=SC2034,SC2296
     configs=("${(@f)$(gcloud config configurations list --format="value(name)" 2>/dev/null)}")
-    compadd -a configs
+    _describe -t configurations 'gcloud configuration' configs
   }
   compdef _gsw gsw
 fi
